@@ -115,8 +115,6 @@
 
     violence_data = violence_data.filter( d => d["longitude"] != "" && d["latitude"] != "" && d["longitude"] != null && d["latitude"] != null);
 
-    console.log(violence_data);
-
     var data_2013 = [];
     var data_2014 = [];
     var data_2015 = [];
@@ -147,9 +145,12 @@
         }
     });
 
+    console.log(data_2018);
+
+    let count = 0;
     data_2018.forEach((d) => {
         var location = projection([Number(d["longitude"]), Number(d["latitude"])]);
-
+        if (location != null) {
         d3.select("#p1_svg")
         .append("circle")
         .attr("cx", location[0])
@@ -158,8 +159,10 @@
         .style("opacity", 0.5)
         .style("stroke", "black")
         .style("fill", "blue");
-
+        }
     });
+
+    console.log(count);
 
 
     // setup objects for each state.
