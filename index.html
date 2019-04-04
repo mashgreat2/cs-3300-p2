@@ -89,6 +89,7 @@
     let path = d3.geoPath().projection(projection);
 
     var state_name_IDs = await d3.tsv("../us-map-data/us-state-names.tsv");
+    
 
     svg.selectAll("path")
       .data(states_geo.features)
@@ -104,8 +105,14 @@
       .enter()
       .append("svg:text")
       .text(data => get_state_name(data.id, state_name_IDs, short=true))
-      .attr("x", d => path.centroid(d)[0])
-      .attr("y", d => path.centroid(d)[1])
+      .attr("x", d => {
+        x = path.centroid(d)[0] 
+        return isNaN(x) ? 0 : x;
+      })
+      .attr("y", d => {
+        y = path.centroid(d)[1];
+        return isNaN(y) ? 0 : y; 
+      })
       .attr("text-anchor","middle")
       .attr('font-size','13px');
 
