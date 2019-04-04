@@ -110,7 +110,56 @@
       .attr('font-size','13px');
 
 
-    education_data = null;
+    //GUN VIOLENCE DATA
+    let violence_data = await d3.csv("../datasets/gun-violence-data2013-2018_2.csv");
+
+    violence_data = violence_data.filter( d => d["longitude"] != "" && d["latitude"] != "" && d["longitude"] != null && d["latitude"] != null);
+
+    console.log(violence_data);
+
+    var data_2013 = [];
+    var data_2014 = [];
+    var data_2015 = [];
+    var data_2016 = [];
+    var data_2017 = [];
+    var data_2018 = [];
+
+    violence_data.forEach((d) => {
+        var year = d["date"].split("/");
+        if (year[2] == "13") {
+            data_2013.push(d);
+
+        } else if (year[2] == "14") {
+            data_2014.push(d);
+
+        } else if (year[2] == "15") {
+            data_2015.push(d);
+
+        } else if (year[2] == "16") {
+            data_2016.push(d);
+
+        } else if (year[2] == "17") {
+            data_2017.push(d);
+
+        } else if (year[2] == "18") {
+            data_2018.push(d);
+
+        }
+    });
+
+    data_2018.forEach((d) => {
+        var location = projection([Number(d["longitude"]), Number(d["latitude"])]);
+
+        d3.select("#p1_svg")
+        .append("circle")
+        .attr("cx", location[0])
+        .attr("cy", location[1])
+        .attr("r", 3)
+        .style("stroke", "black")
+        .style("fill", "blue");
+
+    });
+
 
     // setup objects for each state.
 
