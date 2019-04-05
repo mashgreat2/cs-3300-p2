@@ -55,10 +55,10 @@
           officiis labore enim nam?</h5>
 
           <div>
-            <button year_value="2013" type="button" class="btn btn-outline-primary year-change-button">2013</button>
-            <button year_value="2014" type="button" class="btn btn-outline-primary year-change-button">2014</button>
-            <button year_value="2015" type="button" class="btn btn-outline-primary year-change-button">2015</button>
-            <button year_value="2016" type="button" class="btn btn-outline-primary year-change-button active">2016</button>
+            <button year_value="2013" type="button" class="btn btn-outline-danger year-change-button">2013</button>
+            <button year_value="2014" type="button" class="btn btn-outline-danger year-change-button">2014</button>
+            <button year_value="2015" type="button" class="btn btn-outline-danger year-change-button">2015</button>
+            <button year_value="2016" type="button" class="btn btn-outline-danger year-change-button active">2016</button>
           </div>
         <div id="p1_div_for_svg">
         </div>
@@ -136,89 +136,38 @@
       let violence_data = await d3.csv("../datasets/gun-violence-data2013-2018_2.csv");
 
       violence_data = violence_data.filter(d => d["longitude"] != "" && d["latitude"] != "" && d["longitude"] != null && d["latitude"] != null);
-
-      console.log("violence_data: ", violence_data)
-
-      var data_2013 = [];
-      var data_2014 = [];
-      var data_2015 = [];
-      var data_2016 = [];
-      var data_2017 = [];
-      var data_2018 = [];
-
+      
+      // get the gun violence data for the common years
+      var gun_violence_2013_2016 = {
+        '2013': [],
+        '2014': [],
+        '2015': [],
+        '2016': [],
+      };
+      
       violence_data.forEach((d) => {
         var year = d["date"].split("/");
         if (year[2] == "13") {
-          data_2013.push(d);
+          gun_violence_2013_2016['2013'].push(d);
 
         } else if (year[2] == "14") {
-          data_2014.push(d);
+          gun_violence_2013_2016['2014'].push(d);
 
         } else if (year[2] == "15") {
-          data_2015.push(d);
+          gun_violence_2013_2016['2015'].push(d);
 
         } else if (year[2] == "16") {
-          data_2016.push(d);
-
-        } else if (year[2] == "17") {
-          data_2017.push(d);
-
-        } else if (year[2] == "18") {
-          data_2018.push(d);
-
+          gun_violence_2013_2016['2016'].push(d);
         }
       });
 
-      console.log(data_2016);
-
-      // data_2016.forEach((d) => {
-      //   var location = projection([Number(d["longitude"]), Number(d["latitude"])]);
-      //   if (location != null) {
-      //     d3.select("#p1_svg")
-      //       .append("circle")
-      //       .attr("cx", location[0])
-      //       .attr("cy", location[1])
-      //       .attr("r", 3)
-      //       .style("opacity", 0.5)
-      //       .style("stroke", "black")
-      //       .style("fill", "blue");
-      //   }
-      // });
-
-      // Gun Violence Chloropleth Attempt
-      var stateCounts_2016 = {};
-      var stateName = {};
-      state_name_IDs.forEach(row => {
-        stateCounts_2016[row.name] = 0;
-        stateName[row.id] = row.name;
-      });
-      data_2016.forEach(d => {
-        stateCounts_2016[d["state"]] += 1;
-      });
-      console.log("stateName: ", stateName);
-      console.log("stateCounts_2016: ", stateCounts_2016);
-
-      let minMax_2016 = d3.extent(state_name_IDs, d => stateCounts_2016[d.name]);
-      console.log("minMax_2016: ", minMax_2016)
-
-      const colorScale_2016 = d3.scaleQuantile()
-        .domain(d3.values(stateCounts_2016))
-        .range(["#f7fbff", "#deebf7", "c6dbef", "#9ecae1", "#6baed6", "#4292c6",
-          "#2171b5", "#084594"]);
-
-      svg.selectAll(".state")
-        .style("fill", d => colorScale_2016(stateCounts_2016[stateName[d.id]]));
+      update_gun_violence_data(gun_violence_2013_2016['2016']); // set 2016 as the default year for gun violence
 
       // Mass Shooting Data
       var shooting_data = await d3.csv("../datasets/mass-shooting-dataset.csv");
 
       shooting_data = shooting_data.filter(d => d["Longitude"] != "" &&
         d["Latitude"] != "");
-
-      var shooting_2013 = [];
-      var shooting_2014 = [];
-      var shooting_2015 = [];
-      var shooting_2016 = [];
 
       var mass_shooting_2013_2016 = {
         '2013': [],
@@ -231,17 +180,54 @@
         var shooting_year = d["Date"].split("/");
         if (shooting_year[2] == "2013") {
           mass_shooting_2013_2016['2013'].push(d);
-
         } else if (shooting_year[2] == "2014") {
           mass_shooting_2013_2016['2014'].push(d);
-
         } else if (shooting_year[2] == "2015") {
           mass_shooting_2013_2016['2015'].push(d);
-
         } else if (shooting_year[2] == "2016") {
           mass_shooting_2013_2016['2016'].push(d);
         }
       });
+
+      update_shooting_data(mass_shooting_2013_2016['2016']); // set 2016 as the default year for mass shootings
+      
+      // Button click handler for changing data.
+      d3.selectAll(".year-change-button").on("mouseup", function() {
+        console.log("button pressed.");
+        console.log("this: ", this);
+        d3.selectAll(".year-change-button").classed('active', false);
+        d3.select(this).classed('active', true);
+        let button_year = d3.select(this).attr("year_value");
+        console.log("element: ", button_year);
+        let svg = d3.select("#p1_svg")
+        svg.selectAll(".mass_shooting_data_point").remove();
+        update_shooting_data(mass_shooting_2013_2016[button_year]);
+        update_gun_violence_data(gun_violence_2013_2016[button_year]);
+      });
+
+      function update_gun_violence_data(year_data) {
+        let crime_counts_this_year = {};
+        let stateName = {};
+        state_name_IDs.forEach(row => {
+          crime_counts_this_year[row.name] = 0;
+          stateName[row.id] = row.name;
+        });
+
+        year_data.forEach(d => {
+          crime_counts_this_year[d["state"]] += 1;
+        });
+
+        let min_max_crime_counts = d3.extent(state_name_IDs, d => crime_counts_this_year[d.name]);
+
+        let colorScale_2016 = d3.scaleQuantile()
+        .domain(d3.values(crime_counts_this_year))
+        .range(["#f7fbff", "#deebf7", "c6dbef", "#9ecae1", "#6baed6", "#4292c6",
+          "#2171b5", "#084594"]);
+
+        svg.selectAll(".state")
+          .style("fill", d => colorScale_2016(crime_counts_this_year[stateName[d.id]]));
+
+      }
 
       function update_shooting_data(year_data) {
         let svg = d3.select("#p1_svg")
@@ -259,39 +245,9 @@
           .attr("class", "mass_shooting_data_point")
           .style("opacity", 0.5)
           .style("stroke", "black")
-          .style("fill", "red")
-          .transition().duration(500).attr("opacity",1);
-
+          .style("fill", "red");
       }
-
-      console.log("mass_shooting_2013_2016: ", mass_shooting_2013_2016);
-
-      update_shooting_data(mass_shooting_2013_2016['2016']);
-
-      // shooting_2016.forEach((d) => {
-      //   var shooting_location = projection([Number(d["Longitude"]), Number(d["Latitude"])]);
-      //   d3.select("#p1_svg")
-      //     .append("circle")
-      //     .attr("cx", shooting_location[0])
-      //     .attr("cy", shooting_location[1])
-      //     .attr("r", +d['Fatalities'] + +d['Injured'])
-      //     .attr("class", "mass_shooting_data_point")
-      //     .style("opacity", 0.5)
-      //     .style("stroke", "black")
-      //     .style("fill", "red");
-      // });
-
-      d3.selectAll(".year-change-button").on("mouseup", function() {
-        console.log("button pressed.");
-        console.log("this: ", this);
-        d3.selectAll(".year-change-button").classed('active', false);
-        d3.select(this).classed('active', true);
-        let button_year = d3.select(this).attr("year_value");
-        console.log("element: ", button_year);
-        let svg = d3.select("#p1_svg")
-        svg.selectAll(".mass_shooting_data_point").remove();
-        update_shooting_data(mass_shooting_2013_2016[button_year]);
-      });
+      
 
       // setup objects for each state.
 
