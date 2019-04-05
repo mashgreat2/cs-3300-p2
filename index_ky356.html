@@ -163,40 +163,19 @@
 
       console.log(data_2016);
 
-      // data_2016.forEach((d) => {
-      //   var location = projection([Number(d["longitude"]), Number(d["latitude"])]);
-      //   if (location != null) {
-      //     d3.select("#p1_svg")
-      //       .append("circle")
-      //       .attr("cx", location[0])
-      //       .attr("cy", location[1])
-      //       .attr("r", 3)
-      //       .style("opacity", 0.5)
-      //       .style("stroke", "black")
-      //       .style("fill", "blue");
-      //   }
-      // });
-
-      // Gun Violence Chloropleth Attempt
-      var stateCounts_2016 = {};
-      var stateName = {};
-      state_name_IDs.forEach(row => {
-        stateCounts_2016[row.name] = 0;
-        stateName[row.id] = row.name;
+      data_2016.forEach((d) => {
+        var location = projection([Number(d["longitude"]), Number(d["latitude"])]);
+        if (location != null) {
+          d3.select("#p1_svg")
+            .append("circle")
+            .attr("cx", location[0])
+            .attr("cy", location[1])
+            .attr("r", 3)
+            .style("opacity", 0.5)
+            .style("stroke", "black")
+            .style("fill", "blue");
+        }
       });
-      data_2016.forEach(d => {
-        stateCounts_2016[d["state"]] += 1;
-      });
-      console.log(stateCounts_2016);
-
-      let minMax_2016 = d3.extent(state_name_IDs, d => stateCounts_2016[d.name]);
-      const colorScale_2016 = d3.scaleQuantile()
-        .domain(d3.values(stateCounts_2016))
-        .range(["#f7fbff", "#deebf7", "c6dbef", "#9ecae1", "#6baed6", "#4292c6",
-          "#2171b5", "#084594"]);
-
-      svg.selectAll(".state")
-        .style("fill", d => colorScale_2016(stateCounts_2016[stateName[d.id]]));
 
       // Mass Shooting Data
       var shooting_data = await d3.csv("../datasets/mass-shooting-dataset.csv");
@@ -241,15 +220,15 @@
 
       const color_scale = d3.scaleSequential(d3.interpolateOranges).domain([0, 1]);
 
-      // svg.selectAll(".state")
-      //   .style("fill", data => {
-      //     let state_name = get_state_name(data.id, state_name_IDs);
-      //     // console.log("data: ", data);
-      //     // console.log("state_name: ", state_name);
-      //     if (valid_data[state_name] === undefined) { return color_scale(0); }
-      //     let score = valid_data[state_name].scaled_score;
-      //     return color_scale(score * 20)
-      //   });
+      svg.selectAll(".state")
+        .style("fill", data => {
+          let state_name = get_state_name(data.id, state_name_IDs);
+          // console.log("data: ", data);
+          // console.log("state_name: ", state_name);
+          if (valid_data[state_name] === undefined) { return color_scale(0); }
+          let score = valid_data[state_name].scaled_score;
+          return color_scale(score * 20)
+        });
 
     }
 
@@ -267,7 +246,6 @@
       if (short) return temp[0].code;
       return clean_name(temp[0].name);
     };
-
 
   </script>
 
