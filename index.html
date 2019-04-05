@@ -53,6 +53,13 @@
         <h5>Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, quidem natus, dicta eveniet perspiciatis
           dolorum temporibus laboriosam dolor reprehenderit ratione, modi veritatis quisquam eius numquam repellat
           officiis labore enim nam?</h5>
+
+          <div>
+            <button year_value="2013" type="button" class="btn btn-outline-primary year-change-button">2013</button>
+            <button year_value="2014" type="button" class="btn btn-outline-primary year-change-button">2014</button>
+            <button year_value="2015" type="button" class="btn btn-outline-primary year-change-button">2015</button>
+            <button year_value="2016" type="button" class="btn btn-outline-primary year-change-button active">2016</button>
+          </div>
         <div id="p1_div_for_svg">
         </div>
         <div id="p1_div_for_legend">
@@ -73,7 +80,6 @@
     var svg_width = 800;
     var svg_height = 500;
     var margin = { top: 30, right: 30, bottom: 50, left: 60 };
-    var education_data = null;
     var data_filtered = {};
     var valid_data = {};
 
@@ -131,6 +137,8 @@
 
       violence_data = violence_data.filter(d => d["longitude"] != "" && d["latitude"] != "" && d["longitude"] != null && d["latitude"] != null);
 
+      console.log("violence_data: ", violence_data)
+
       var data_2013 = [];
       var data_2014 = [];
       var data_2015 = [];
@@ -187,9 +195,12 @@
       data_2016.forEach(d => {
         stateCounts_2016[d["state"]] += 1;
       });
-      console.log(stateCounts_2016);
+      console.log("stateName: ", stateName);
+      console.log("stateCounts_2016: ", stateCounts_2016);
 
       let minMax_2016 = d3.extent(state_name_IDs, d => stateCounts_2016[d.name]);
+      console.log("minMax_2016: ", minMax_2016)
+
       const colorScale_2016 = d3.scaleQuantile()
         .domain(d3.values(stateCounts_2016))
         .range(["#f7fbff", "#deebf7", "c6dbef", "#9ecae1", "#6baed6", "#4292c6",
@@ -209,32 +220,77 @@
       var shooting_2015 = [];
       var shooting_2016 = [];
 
+      var mass_shooting_2013_2016 = {
+        '2013': [],
+        '2014': [],
+        '2015': [],
+        '2016': [],
+      };
+
       shooting_data.forEach((d) => {
         var shooting_year = d["Date"].split("/");
         if (shooting_year[2] == "2013") {
-          shooting_2013.push(d);
+          mass_shooting_2013_2016['2013'].push(d);
 
         } else if (shooting_year[2] == "2014") {
-          shooting_2014.push(d);
+          mass_shooting_2013_2016['2014'].push(d);
 
         } else if (shooting_year[2] == "2015") {
-          shooting_2015.push(d);
+          mass_shooting_2013_2016['2015'].push(d);
 
         } else if (shooting_year[2] == "2016") {
-          shooting_2016.push(d);
+          mass_shooting_2013_2016['2016'].push(d);
         }
       });
 
-      shooting_2016.forEach((d) => {
-        var shooting_location = projection([Number(d["Longitude"]), Number(d["Latitude"])]);
-        d3.select("#p1_svg")
-          .append("circle")
-          .attr("cx", shooting_location[0])
-          .attr("cy", shooting_location[1])
-          .attr("r", 8)
+      function update_shooting_data(year_data) {
+        let svg = d3.select("#p1_svg")
+        let circles = svg.selectAll(".mass_shooting_data_point").data(year_data);
+        // remove existing circle objects.
+
+        // create new circle objects.
+        console.log("inside the function..");
+        circles
+          .enter().append("circle")
+          .attr("r", d => +d['Fatalities'] + +d['Injured'])
+          .attr("transform", d => {
+            return "translate(" + projection([ +d["Longitude"], +d["Latitude"] ]) + ")";
+          })
+          .attr("class", "mass_shooting_data_point")
           .style("opacity", 0.5)
           .style("stroke", "black")
-          .style("fill", "red");
+          .style("fill", "red")
+          .transition().duration(500).attr("opacity",1);
+
+      }
+
+      console.log("mass_shooting_2013_2016: ", mass_shooting_2013_2016);
+
+      update_shooting_data(mass_shooting_2013_2016['2016']);
+
+      // shooting_2016.forEach((d) => {
+      //   var shooting_location = projection([Number(d["Longitude"]), Number(d["Latitude"])]);
+      //   d3.select("#p1_svg")
+      //     .append("circle")
+      //     .attr("cx", shooting_location[0])
+      //     .attr("cy", shooting_location[1])
+      //     .attr("r", +d['Fatalities'] + +d['Injured'])
+      //     .attr("class", "mass_shooting_data_point")
+      //     .style("opacity", 0.5)
+      //     .style("stroke", "black")
+      //     .style("fill", "red");
+      // });
+
+      d3.selectAll(".year-change-button").on("mouseup", function() {
+        console.log("button pressed.");
+        console.log("this: ", this);
+        d3.selectAll(".year-change-button").classed('active', false);
+        d3.select(this).classed('active', true);
+        let button_year = d3.select(this).attr("year_value");
+        console.log("element: ", button_year);
+        let svg = d3.select("#p1_svg")
+        svg.selectAll(".mass_shooting_data_point").remove();
+        update_shooting_data(mass_shooting_2013_2016[button_year]);
       });
 
       // setup objects for each state.
