@@ -397,7 +397,10 @@
         let svg2 = d3.select("#p2_svg")
         svg2.selectAll(".mass_shooting_data_point_2").remove();
         d3.select("#slider_value").text(this.value);
-        update_mass_shooting_data2(mass_shooting_1966_2017[this.value]);
+        this_year_data = mass_shooting_1966_2017[this.value]
+        if (this_year_data !== undefined && this_year_data.length > 0) {
+          update_mass_shooting_data2(mass_shooting_1966_2017[this.value]);
+        };
       });
 
 
