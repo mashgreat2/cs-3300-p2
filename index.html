@@ -91,7 +91,8 @@
           officiis labore enim nam?</h5>
         <div id="p2_div_for_svg">
         </div>
-        <input type="range" min="1966" max="2017" id="slider" step="1">
+        <label for="slider"> Year: <span id="slider_value">2016</span> </label><br>
+        <input type="range" min="1966" max="2017" id="slider" step="1" value="2016">
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. A corporis at neque itaque maiores, odio nesciunt
           error iusto dolore vero, eos quae doloribus possimus, obcaecati in quis illo non! Consequuntur!
@@ -196,45 +197,28 @@
       shooting_data = shooting_data.filter(d => d["Longitude"] != "" &&
         d["Latitude"] != "");
 
-      var mass_shooting_2013_2016 = {
-        '2013': [],
-        '2014': [],
-        '2015': [],
-        '2016': [],
-      };
+      // var mass_shooting_1966_2017 = {
+      //   '2013': [],
+      //   '2014': [],
+      //   '2015': [],
+      //   '2016': [],
+      // };
 
-      var mass_shooting_1966_2017 = make_new_dict(1966, 2017);
+      var mass_shooting_1966_2017 = {};
 
-      function make_new_dict(start, end) {
-        var obj = {};
-        for (let i = start; i <= end; i++) {
-          obj[i.toString()] = [];
-        }
-        return obj;
-      }
-
+      // Load the mass shooting data into mass_shooting_1966_2017
       shooting_data.forEach((d) => {
         var shooting_year = d["Date"].split("/");
-        if (shooting_year[2] == "2013") {
-          mass_shooting_2013_2016['2013'].push(d);
-          mass_shooting_1966_2017['2013'].push(d);
-        } else if (shooting_year[2] == "2014") {
-          mass_shooting_2013_2016['2014'].push(d);
-          mass_shooting_1966_2017['2014'].push(d);
-        } else if (shooting_year[2] == "2015") {
-          mass_shooting_2013_2016['2015'].push(d);
-          mass_shooting_1966_2017['2015'].push(d);
-        } else if (shooting_year[2] == "2016") {
-          mass_shooting_2013_2016['2016'].push(d);
-          mass_shooting_1966_2017['2016'].push(d);
+        shooting_year = shooting_year[2];
+        if (mass_shooting_1966_2017[shooting_year] === undefined) {
+          mass_shooting_1966_2017[shooting_year] = [];
         }
-        else {
-          var shoot_year_key = shooting_year[2];
-          mass_shooting_1966_2017[shoot_year_key].push(d);
-        }
-      });
+        mass_shooting_1966_2017[shooting_year].push(d);
+      })
 
-      update_mass_shooting_data(mass_shooting_2013_2016['2016']); // set 2016 as the default year for mass shootings
+      console.log("mass_shooting_1966_2017: ", mass_shooting_1966_2017);
+
+      update_mass_shooting_data(mass_shooting_1966_2017[+'2016']); // set 2016 as the default year for mass shootings
 
       // Button click handler for changing data.
       d3.selectAll(".year-change-button").on("mouseup", function () {
@@ -243,7 +227,7 @@
         let button_year = d3.select(this).attr("year_value");
         let svg = d3.select("#p1_svg")
         svg.selectAll(".mass_shooting_data_point").remove();
-        update_mass_shooting_data(mass_shooting_2013_2016[button_year]);
+        update_mass_shooting_data(mass_shooting_1966_2017[button_year]);
         update_gun_violence_data(gun_violence_2013_2016[button_year]);
       });
 
@@ -393,7 +377,7 @@
         .attr("text-anchor", "middle")
         .attr('font-size', '13px');
 
-      update_mass_shooting_data2(mass_shooting_1966_2017['2017']);
+      update_mass_shooting_data2(mass_shooting_1966_2017['2016']);
 
       function update_mass_shooting_data2(year_data) {
         let svg2 = d3.select("#p2_svg")
@@ -404,13 +388,16 @@
           .attr("transform", d => {
             return "translate(" + projection([+d["Longitude"], +d["Latitude"]]) + ")";
           })
-          .attr("class", "mass_shooting_data_point")
+          .attr("class", "mass_shooting_data_point_2")
           .style("opacity", 0.5)
           .style("stroke", "black")
           .style("fill", "red")
       }
       d3.select("#slider").on("input", function () {
-        update_mass_shooting_data2(this.value);
+        let svg2 = d3.select("#p2_svg")
+        svg2.selectAll(".mass_shooting_data_point_2").remove();
+        d3.select("#slider_value").text(this.value);
+        update_mass_shooting_data2(mass_shooting_1966_2017[this.value]);
       });
 
 
