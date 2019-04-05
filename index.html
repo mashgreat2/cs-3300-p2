@@ -189,19 +189,16 @@
         }
       });
 
-      update_shooting_data(mass_shooting_2013_2016['2016']); // set 2016 as the default year for mass shootings
+      update_mass_shooting_data(mass_shooting_2013_2016['2016']); // set 2016 as the default year for mass shootings
       
       // Button click handler for changing data.
       d3.selectAll(".year-change-button").on("mouseup", function() {
-        console.log("button pressed.");
-        console.log("this: ", this);
         d3.selectAll(".year-change-button").classed('active', false);
         d3.select(this).classed('active', true);
         let button_year = d3.select(this).attr("year_value");
-        console.log("element: ", button_year);
         let svg = d3.select("#p1_svg")
         svg.selectAll(".mass_shooting_data_point").remove();
-        update_shooting_data(mass_shooting_2013_2016[button_year]);
+        update_mass_shooting_data(mass_shooting_2013_2016[button_year]);
         update_gun_violence_data(gun_violence_2013_2016[button_year]);
       });
 
@@ -218,27 +215,27 @@
         });
 
         let min_max_crime_counts = d3.extent(state_name_IDs, d => crime_counts_this_year[d.name]);
-
-        let colorScale_2016 = d3.scaleQuantile()
-        .domain(d3.values(crime_counts_this_year))
-        .range(["#f7fbff", "#deebf7", "c6dbef", "#9ecae1", "#6baed6", "#4292c6",
-          "#2171b5", "#084594"]);
+        
+        let color_scale = d3.scaleSequential(d3.interpolateBlues)
+          .domain([min_max_crime_counts[0], min_max_crime_counts[1]]);
 
         svg.selectAll(".state")
-          .style("fill", d => colorScale_2016(crime_counts_this_year[stateName[d.id]]));
-
+          .style("fill", d => color_scale(crime_counts_this_year[stateName[d.id]]));
+        
+        // update legend..
+        update_legend(color_scale, min_max_crime_counts[0], min_max_crime_counts[1]);
       }
 
-      function update_shooting_data(year_data) {
+      function update_mass_shooting_data(year_data) {
         let svg = d3.select("#p1_svg")
         let circles = svg.selectAll(".mass_shooting_data_point").data(year_data);
         // remove existing circle objects.
 
         // create new circle objects.
-        console.log("inside the function..");
+        // console.log("inside the function..");
         circles
           .enter().append("circle")
-          .attr("r", d => +d['Fatalities'] + +d['Injured'])
+          .attr("r", d => (+d['Fatalities'] + +d['Injured'] ) * 1.2 )
           .attr("transform", d => {
             return "translate(" + projection([ +d["Longitude"], +d["Latitude"] ]) + ")";
           })
@@ -249,19 +246,55 @@
       }
       
 
-      // setup objects for each state.
+      // DRAW THE LEGEND>>>>
+      function update_legend(color_scale, min, max) {
+        let svg_width = 800;
+        let svg_height = 100;
+        let margin = { top: 10, right: 50, bottom: 20, left: 50};
+        let bar_height = 50;
+        let step_size = 5;
 
-      const color_scale = d3.scaleSequential(d3.interpolateOranges).domain([0, 1]);
+        d3.select("#legend_svg_id").remove();
 
-      // svg.selectAll(".state")
-      //   .style("fill", data => {
-      //     let state_name = get_state_name(data.id, state_name_IDs);
-      //     // console.log("data: ", data);
-      //     // console.log("state_name: ", state_name);
-      //     if (valid_data[state_name] === undefined) { return color_scale(0); }
-      //     let score = valid_data[state_name].scaled_score;
-      //     return color_scale(score * 20)
-      //   });
+        d3.select("#p1_div_for_legend")
+          .append("svg")
+          .attr("id", "legend_svg_id")
+          .attr("width", svg_width).attr("height", svg_height)
+          .append("g").attr("id", "p1_legend_svg_g1");
+  
+        let svg = d3.select("#p1_legend_svg_g1");
+  
+        let x_scale = d3.scaleLinear()
+          .domain([0, 1])
+          .range([margin.left, svg_width-margin.right]);
+  
+        let bottomAxis = d3.axisBottom(x_scale)
+          .ticks(20)
+          .tickFormat(d => d3.format('0.2s')(d * max) );
+        svg.append("g").attr("class", "x_axis")
+          .attr("transform","translate("+ (0) +","+ (svg_height-margin.bottom) +")")
+          .call(bottomAxis)
+          .selectAll("text")
+          .style("text-anchor", "middle");
+  
+        svg.append("g").attr("id", "legend_bars");
+  
+        svg = d3.select("#legend_bars");
+  
+        for (let i = 0; i <= 1.01 ; i = i + 0.01) {
+          // console.log("i * max: ", i * max);
+          svg.append("rect")
+            .attr("x", x_scale(i))
+            .attr("y", 25)
+            .attr("width", step_size)
+            .attr("height", bar_height)
+            .attr('stroke-width', .5)
+            .attr('stroke', "black")
+            .attr("fill", color_scale(i * max));
+        }
+
+      }
+      
 
     }
 
