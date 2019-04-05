@@ -25,6 +25,13 @@
       stroke: black;
     }
 
+    .fixed-event-detail {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 300px;
+      border: 2px solid rgb(173, 42, 33);
+    }
 
 
     g.x text {
@@ -65,6 +72,16 @@
         <div id="p1_div_for_legend">
         </div>
         <br>
+        <div class="card fixed-event-detail d-none" style="width: 400px;">
+          <div class="card-body">
+            <h5 id="card-title-event" class="card-title">Card title</h5>
+            <h6 id="card-subtitle-event" class="card-subtitle mb-2 text-danger">Card subtitle</h6>
+            <p id="card-summary-event"></p>
+            <ul id="card-extra-details-event" class="list-group">
+              <!-- <li class="list-group-item">Cras justo odio</li> -->
+            </ul>
+          </div>
+        </div>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. A corporis at neque itaque maiores, odio nesciunt
           error iusto dolore vero, eos quae doloribus possimus, obcaecati in quis illo non! Consequuntur!
@@ -242,7 +259,28 @@
           .attr("class", "mass_shooting_data_point")
           .style("opacity", 0.5)
           .style("stroke", "black")
-          .style("fill", "red");
+          .style("fill", "red")
+          .on('mouseover', function(d) {
+            element = d3.select(this);
+            d3.select(".fixed-event-detail").classed('d-none', false);
+            d3.select("#card-title-event").text(d['Title'])
+            d3.select("#card-subtitle-event").text("Date: " + d['Date'])
+            d3.select("#card-summary-event").text("Summary: " + d['Summary'].substring(0, 300) + ".....")
+            d3.select("#card-extra-details-event").html("") // clear list elements 
+            d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
+              .text("Location: " + d.Location)
+            d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
+              .text("Fatalities: " + d.Fatalities)
+            d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
+              .text("Injured: " + d.Injured)
+            d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item text-danger')
+              .text("Total victims: " + d['Total victims'])
+            d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
+              .text("Shooter Race: " + d['Race'])
+          })
+          .on('mouseout', function(d) {
+            d3.select(".fixed-event-detail").classed('d-none', true);
+          });
       }
       
 
