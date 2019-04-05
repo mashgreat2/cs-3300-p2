@@ -61,12 +61,12 @@
           dolorum temporibus laboriosam dolor reprehenderit ratione, modi veritatis quisquam eius numquam repellat
           officiis labore enim nam?</h5>
 
-          <div>
-            <button year_value="2013" type="button" class="btn btn-outline-danger year-change-button">2013</button>
-            <button year_value="2014" type="button" class="btn btn-outline-danger year-change-button">2014</button>
-            <button year_value="2015" type="button" class="btn btn-outline-danger year-change-button">2015</button>
-            <button year_value="2016" type="button" class="btn btn-outline-danger year-change-button active">2016</button>
-          </div>
+        <div>
+          <button year_value="2013" type="button" class="btn btn-outline-danger year-change-button">2013</button>
+          <button year_value="2014" type="button" class="btn btn-outline-danger year-change-button">2014</button>
+          <button year_value="2015" type="button" class="btn btn-outline-danger year-change-button">2015</button>
+          <button year_value="2016" type="button" class="btn btn-outline-danger year-change-button active">2016</button>
+        </div>
         <div id="p1_div_for_svg">
         </div>
         <div id="p1_div_for_legend">
@@ -82,6 +82,16 @@
             </ul>
           </div>
         </div>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. A corporis at neque itaque maiores, odio nesciunt
+          error iusto dolore vero, eos quae doloribus possimus, obcaecati in quis illo non! Consequuntur!
+        </p>
+        <h5>Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, quidem natus, dicta eveniet perspiciatis
+          dolorum temporibus laboriosam dolor reprehenderit ratione, modi veritatis quisquam eius numquam repellat
+          officiis labore enim nam?</h5>
+        <div id="p2_div_for_svg">
+        </div>
+        <input type="range" min="1966" max="2017" id="slider" step="1">
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. A corporis at neque itaque maiores, odio nesciunt
           error iusto dolore vero, eos quae doloribus possimus, obcaecati in quis illo non! Consequuntur!
@@ -111,12 +121,12 @@
       var svg = d3.select('#p1_svg_g1');
 
       // load the state TopoJSON data
-      let states_topo = await d3.json("./us-map-data/us.json");
+      var states_topo = await d3.json("./us-map-data/us.json");
       // convert the TopoJSON to GeoJson
-      let states_geo = topojson.feature(states_topo, states_topo.objects.states);
+      var states_geo = topojson.feature(states_topo, states_topo.objects.states);
       // D3 Projection
-      let projection = d3.geoAlbersUsa().fitSize([svg_width, svg_height], states_geo);
-      let path = d3.geoPath().projection(projection);
+      var projection = d3.geoAlbersUsa().fitSize([svg_width, svg_height], states_geo);
+      var path = d3.geoPath().projection(projection);
 
       var state_name_IDs = await d3.tsv("../us-map-data/us-state-names.tsv");
 
@@ -153,7 +163,7 @@
       let violence_data = await d3.csv("../datasets/gun-violence-data2013-2018_2.csv");
 
       violence_data = violence_data.filter(d => d["longitude"] != "" && d["latitude"] != "" && d["longitude"] != null && d["latitude"] != null);
-      
+
       // get the gun violence data for the common years
       var gun_violence_2013_2016 = {
         '2013': [],
@@ -161,7 +171,7 @@
         '2015': [],
         '2016': [],
       };
-      
+
       violence_data.forEach((d) => {
         var year = d["date"].split("/");
         if (year[2] == "13") {
@@ -193,23 +203,41 @@
         '2016': [],
       };
 
+      var mass_shooting_1966_2017 = make_new_dict(1966, 2017);
+
+      function make_new_dict(start, end) {
+        var obj = {};
+        for (let i = start; i <= end; i++) {
+          obj[i.toString()] = [];
+        }
+        return obj;
+      }
+
       shooting_data.forEach((d) => {
         var shooting_year = d["Date"].split("/");
         if (shooting_year[2] == "2013") {
           mass_shooting_2013_2016['2013'].push(d);
+          mass_shooting_1966_2017['2013'].push(d);
         } else if (shooting_year[2] == "2014") {
           mass_shooting_2013_2016['2014'].push(d);
+          mass_shooting_1966_2017['2014'].push(d);
         } else if (shooting_year[2] == "2015") {
           mass_shooting_2013_2016['2015'].push(d);
+          mass_shooting_1966_2017['2015'].push(d);
         } else if (shooting_year[2] == "2016") {
           mass_shooting_2013_2016['2016'].push(d);
+          mass_shooting_1966_2017['2016'].push(d);
+        }
+        else {
+          var shoot_year_key = shooting_year[2];
+          mass_shooting_1966_2017[shoot_year_key].push(d);
         }
       });
 
       update_mass_shooting_data(mass_shooting_2013_2016['2016']); // set 2016 as the default year for mass shootings
-      
+
       // Button click handler for changing data.
-      d3.selectAll(".year-change-button").on("mouseup", function() {
+      d3.selectAll(".year-change-button").on("mouseup", function () {
         d3.selectAll(".year-change-button").classed('active', false);
         d3.select(this).classed('active', true);
         let button_year = d3.select(this).attr("year_value");
@@ -232,13 +260,13 @@
         });
 
         let min_max_crime_counts = d3.extent(state_name_IDs, d => crime_counts_this_year[d.name]);
-        
+
         let color_scale = d3.scaleSequential(d3.interpolateBlues)
           .domain([min_max_crime_counts[0], min_max_crime_counts[1]]);
 
         svg.selectAll(".state")
           .style("fill", d => color_scale(crime_counts_this_year[stateName[d.id]]));
-        
+
         // update legend..
         update_legend(color_scale, min_max_crime_counts[0], min_max_crime_counts[1]);
       }
@@ -252,15 +280,15 @@
         // console.log("inside the function..");
         circles
           .enter().append("circle")
-          .attr("r", d => (+d['Fatalities'] + +d['Injured'] ) * 1.2 )
+          .attr("r", d => (+d['Fatalities'] + +d['Injured']) * 1.2)
           .attr("transform", d => {
-            return "translate(" + projection([ +d["Longitude"], +d["Latitude"] ]) + ")";
+            return "translate(" + projection([+d["Longitude"], +d["Latitude"]]) + ")";
           })
           .attr("class", "mass_shooting_data_point")
           .style("opacity", 0.5)
           .style("stroke", "black")
           .style("fill", "red")
-          .on('mouseover', function(d) {
+          .on('mouseover', function (d) {
             element = d3.select(this);
             d3.select(".fixed-event-detail").classed('d-none', false);
             d3.select("#card-title-event").text(d['Title'])
@@ -278,17 +306,17 @@
             d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
               .text("Shooter Race: " + d['Race'])
           })
-          .on('mouseout', function(d) {
+          .on('mouseout', function (d) {
             d3.select(".fixed-event-detail").classed('d-none', true);
           });
       }
-      
+
 
       // DRAW THE LEGEND>>>>
       function update_legend(color_scale, min, max) {
         let svg_width = 800;
         let svg_height = 100;
-        let margin = { top: 10, right: 50, bottom: 20, left: 50};
+        let margin = { top: 10, right: 50, bottom: 20, left: 50 };
         let bar_height = 50;
         let step_size = 5;
 
@@ -299,27 +327,27 @@
           .attr("id", "legend_svg_id")
           .attr("width", svg_width).attr("height", svg_height)
           .append("g").attr("id", "p1_legend_svg_g1");
-  
+
         let svg = d3.select("#p1_legend_svg_g1");
-  
+
         let x_scale = d3.scaleLinear()
           .domain([0, 1])
-          .range([margin.left, svg_width-margin.right]);
-  
+          .range([margin.left, svg_width - margin.right]);
+
         let bottomAxis = d3.axisBottom(x_scale)
           .ticks(20)
-          .tickFormat(d => d3.format('0.2s')(d * max) );
+          .tickFormat(d => d3.format('0.2s')(d * max));
         svg.append("g").attr("class", "x_axis")
-          .attr("transform","translate("+ (0) +","+ (svg_height-margin.bottom) +")")
+          .attr("transform", "translate(" + (0) + "," + (svg_height - margin.bottom) + ")")
           .call(bottomAxis)
           .selectAll("text")
           .style("text-anchor", "middle");
-  
+
         svg.append("g").attr("id", "legend_bars");
-  
+
         svg = d3.select("#legend_bars");
-  
-        for (let i = 0; i <= 1.01 ; i = i + 0.01) {
+
+        for (let i = 0; i <= 1.01; i = i + 0.01) {
           // console.log("i * max: ", i * max);
           svg.append("rect")
             .attr("x", x_scale(i))
@@ -330,9 +358,61 @@
             .attr('stroke', "black")
             .attr("fill", color_scale(i * max));
         }
-
       }
-      
+
+      d3.select("#p2_div_for_svg")
+        .append("svg")
+        .attr("width", 800).attr("height", 500)
+        .attr("id", "p2_svg")
+        .append("g").attr("id", "p2_svg_g1");
+
+      var svg2 = d3.select('#p2_svg_g1');
+
+      svg2.selectAll("path")
+        .data(states_geo.features)
+        .enter()
+        .append("path")
+        .attr("class", "state")
+        .attr("d", path)
+        .attr("state_id", data => data.id)
+        .attr("state_name", data => get_state_name(data.id, state_name_IDs));
+
+      svg2.selectAll("text")
+        .data(states_geo.features)
+        .enter()
+        .append("svg:text")
+        .text(data => get_state_name(data.id, state_name_IDs, short = true))
+        .attr("x", d => {
+          x = path.centroid(d)[0]
+          return isNaN(x) ? 0 : x;
+        })
+        .attr("y", d => {
+          y = path.centroid(d)[1];
+          return isNaN(y) ? 0 : y;
+        })
+        .attr("text-anchor", "middle")
+        .attr('font-size', '13px');
+
+      update_mass_shooting_data2(mass_shooting_1966_2017['2017']);
+
+      function update_mass_shooting_data2(year_data) {
+        let svg2 = d3.select("#p2_svg")
+        let circles2 = svg2.selectAll(".mass_shooting_data_point").data(year_data);
+        circles2
+          .enter().append("circle")
+          .attr("r", 8)
+          .attr("transform", d => {
+            return "translate(" + projection([+d["Longitude"], +d["Latitude"]]) + ")";
+          })
+          .attr("class", "mass_shooting_data_point")
+          .style("opacity", 0.5)
+          .style("stroke", "black")
+          .style("fill", "red")
+      }
+      d3.select("#slider").on("input", function () {
+        update_mass_shooting_data2(this.value);
+      });
+
 
     }
 
@@ -350,8 +430,6 @@
       if (short) return temp[0].code;
       return clean_name(temp[0].name);
     };
-
-
   </script>
 
 </body>
