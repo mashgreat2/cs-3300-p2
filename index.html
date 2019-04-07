@@ -92,7 +92,7 @@
         <div id="p2_div_for_svg">
         </div>
         <label for="slider"> Year: <span id="slider_value">2016</span> </label><br>
-        <input type="range" min="1966" max="2017" id="slider" step="1" value="2016" class="custom-range"">
+        <input type="range" min="1966" max="2017" id="slider" step="1" value="2016" class="custom-range">
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. A corporis at neque itaque maiores, odio nesciunt
           error iusto dolore vero, eos quae doloribus possimus, obcaecati in quis illo non! Consequuntur!
@@ -289,6 +289,8 @@
               .text("Total victims: " + d['Total victims'])
             d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
               .text("Shooter Race: " + d['Race'])
+            d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
+              .text("Shooter Sex: " + d['Gender'])
           })
           .on('mouseout', function (d) {
             d3.select(".fixed-event-detail").classed('d-none', true);
@@ -392,6 +394,29 @@
           .style("opacity", 0.5)
           .style("stroke", "black")
           .style("fill", "red")
+          .on('mouseover', function (d) {
+            element = d3.select(this);
+            d3.select(".fixed-event-detail").classed('d-none', false);
+            d3.select("#card-title-event").text(d['Title'])
+            d3.select("#card-subtitle-event").text("Date: " + d['Date'])
+            d3.select("#card-summary-event").text("Summary: " + d['Summary'].substring(0, 300) + ".....")
+            d3.select("#card-extra-details-event").html("") // clear list elements 
+            d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
+              .text("Location: " + d.Location)
+            d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
+              .text("Fatalities: " + d.Fatalities)
+            d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
+              .text("Injured: " + d.Injured)
+            d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item text-danger')
+              .text("Total victims: " + d['Total victims'])
+            d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
+              .text("Shooter Race: " + d['Race'])
+            d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
+              .text("Shooter Sex: " + d['Gender'])
+          })
+          .on('mouseout', function (d) {
+            d3.select(".fixed-event-detail").classed('d-none', true);
+          });
       }
       d3.select("#slider").on("input", function () {
         let svg2 = d3.select("#p2_svg")
