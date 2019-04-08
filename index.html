@@ -277,10 +277,12 @@
             d3.select(".fixed-event-detail").classed('d-none', false);
             d3.select("#card-title-event").text(d['Title'])
             d3.select("#card-subtitle-event").text("Date: " + d['Date'])
-            d3.select("#card-summary-event").text("Summary: " + d['Summary'].substring(0, 300) + ".....")
+            d3.select("#card-summary-event").text("Summary: " + d['Summary'])
             d3.select("#card-extra-details-event").html("") // clear list elements 
-            d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
-              .text("Location: " + d.Location)
+            if (d.Location !== "") {
+              d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
+                .text("Location: " + d.Location);
+            }
             d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
               .text("Fatalities: " + d.Fatalities)
             d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
@@ -399,7 +401,7 @@
             d3.select(".fixed-event-detail").classed('d-none', false);
             d3.select("#card-title-event").text(d['Title'])
             d3.select("#card-subtitle-event").text("Date: " + d['Date'])
-            d3.select("#card-summary-event").text("Summary: " + d['Summary'].substring(0, 300) + ".....")
+            d3.select("#card-summary-event").text("Summary: " + d['Summary'])
             d3.select("#card-extra-details-event").html("") // clear list elements 
             d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
               .text("Location: " + d.Location)
