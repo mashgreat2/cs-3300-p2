@@ -386,7 +386,7 @@
         let circles2 = svg2.selectAll(".mass_shooting_data_point").data(year_data);
         circles2
           .enter().append("circle")
-          .attr("r", 8)
+          .attr("r", d => Math.min((+d['Fatalities'] + +d['Injured']) * 1.2, 100))
           .attr("transform", d => {
             return "translate(" + projection([+d["Longitude"], +d["Latitude"]]) + ")";
           })
