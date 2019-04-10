@@ -57,9 +57,6 @@
     <div class="card mx-auto  my-2" style="width: 900px;">
       <h4 class="card-header">Gun violence and Mass shootings data comparison from 2013-2016</h4>
       <div class="card-body">
-        <h5>Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, quidem natus, dicta eveniet perspiciatis
-          dolorum temporibus laboriosam dolor reprehenderit ratione, modi veritatis quisquam eius numquam repellat
-          officiis labore enim nam?</h5>
 
         <div>
           <button year_value="2013" type="button" class="btn btn-outline-danger year-change-button">2013</button>
@@ -73,12 +70,9 @@
         </div>
         <br>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. A corporis at neque itaque maiores, odio nesciunt
-          error iusto dolore vero, eos quae doloribus possimus, obcaecati in quis illo non! Consequuntur!
+          Darker blue colors represent higher gun violence. Mass shootings are represented with
+          red circles.
         </p>
-        <h5>Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, quidem natus, dicta eveniet perspiciatis
-          dolorum temporibus laboriosam dolor reprehenderit ratione, modi veritatis quisquam eius numquam repellat
-          officiis labore enim nam?</h5>
       </div>
     </div>
 
@@ -91,8 +85,8 @@
         <button type="button" id="slider_value" class="btn btn-outline-danger">2016</button>
         <input type="range" min="1966" max="2017" id="slider" step="1" value="2016" class="custom-range">
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. A corporis at neque itaque maiores, odio nesciunt
-          error iusto dolore vero, eos quae doloribus possimus, obcaecati in quis illo non! Consequuntur!
+          Mass shootings are represented with red circles. Feel free to change the years with
+          the slider and look at the data for different years.
         </p>
       </div>
     </div>
@@ -395,7 +389,7 @@
         let circles2 = svg2.selectAll(".mass_shooting_data_point").data(year_data);
         circles2
           .enter().append("circle")
-          .attr("r", d => Math.min((+d['Fatalities'] + +d['Injured']) * 1.2, 100))
+          .attr("r", d => Math.min((+d['Fatalities'] + +d['Injured']) * 1.2, 160))
           .attr("transform", d => {
             return "translate(" + projection([+d["Longitude"], +d["Latitude"]]) + ")";
           })
@@ -410,8 +404,10 @@
             d3.select("#card-subtitle-event").text("Date: " + d['Date'])
             d3.select("#card-summary-event").text("Summary: " + d['Summary'])
             d3.select("#card-extra-details-event").html("") // clear list elements 
-            d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
-              .text("Location: " + d.Location)
+            if (d.Location !== "") {
+              d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
+                .text("Location: " + d.Location);
+            }
             d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
               .text("Fatalities: " + d.Fatalities)
             d3.select("#card-extra-details-event").append("li").attr('class', 'list-group-item')
