@@ -1,0 +1,193 @@
+commit 1f979b99d77827d68d677f78fb86330f89456e60
+Author: SM Mashuque <smjim1998@gmail.com>
+Date:   Thu Apr 11 13:50:54 2019 -0400
+
+    delete old files
+
+commit c9fc9df6990ea33ec5c2aa038aaf77b3db5cedda
+Author: SM Mashuque <smjim1998@gmail.com>
+Date:   Thu Apr 11 13:49:52 2019 -0400
+
+    update the written portion file.
+
+commit f1812fc4a3baf2f24d3afd2e0a30529470b2d48d
+Author: Anastasia Okoye <ao322@cornell.edu>
+Date:   Wed Apr 10 10:54:24 2019 -0400
+
+    updated descriptions for graph
+
+commit 2df061b37381d9142e7810e46f147a56dd23b3f0
+Author: SM Mashuque <smjim1998@gmail.com>
+Date:   Wed Apr 10 10:41:04 2019 -0400
+
+    add some text to graphs, hide location for second graph if it doesn't exist
+
+commit b7e5d25fbde553223eae317d440105756c4157b7
+Author: SM Mashuque <smjim1998@gmail.com>
+Date:   Sun Apr 7 21:22:00 2019 -0400
+
+    change the button for the second graph to match the first graph's button
+
+commit 377d0cb17616fb8b556a76fa1517af458694a623
+Author: SM Mashuque <smjim1998@gmail.com>
+Date:   Sun Apr 7 21:17:51 2019 -0400
+
+    card popup bugfix where card was hiding behind a div
+
+commit bf7e24b369ede546f65681a473b8c7b430a9d1c4
+Author: SM Mashuque <smjim1998@gmail.com>
+Date:   Sun Apr 7 21:15:22 2019 -0400
+
+    show the second graph in a new card
+
+commit 9bcfd295fee89aa89e8d7eae90302c68a35bdf3d
+Author: SM Mashuque <smjim1998@gmail.com>
+Date:   Sun Apr 7 20:54:44 2019 -0400
+
+    show full summary in the graphs. hide location if it doesn't exist
+
+commit 56e5f88d661d0648f31df7a4084ae0fc67e2bc99
+Author: SM Mashuque <smjim1998@gmail.com>
+Date:   Sun Apr 7 20:11:12 2019 -0400
+
+    make the circles large based on number of injuries + deaths
+
+commit 73a4eb2f056991920f029a926acc08bfe404a3d3
+Author: Kelly <ky356@cornell.edu>
+Date:   Sun Apr 7 16:59:34 2019 -0400
+
+    added cards for mouseover for second graph
+
+commit acc7cf0700f91d16ae2a34b3a746afea30958658
+Author: Anastasia Okoye <ao322@cornell.edu>
+Date:   Fri Apr 5 23:33:31 2019 -0400
+
+    very rough draft of written portion (team contributions incomplete)
+
+commit 3880f46893656c2f2b15cca25c530e734fcd44ae
+Author: SM Mashuque <smjim1998@gmail.com>
+Date:   Fri Apr 5 18:06:46 2019 -0400
+
+    do not update the second graph if data is undefined for that year
+
+commit 02209ee6d7d1109c4bedb2c1243ac0d2eb864a4c
+Author: SM Mashuque <smjim1998@gmail.com>
+Date:   Fri Apr 5 18:02:23 2019 -0400
+
+    add bootstrap styling to the slider for second graph
+
+commit c39d6f7bcec6d8d2fe5c97ff393e58aab8d9b92c
+Author: SM Mashuque <smjim1998@gmail.com>
+Date:   Fri Apr 5 18:00:07 2019 -0400
+
+    fix the second graph, use the same data dictionary
+
+commit 5f8eb7ebeeb97771d46d82997a3f6543de3b697c
+Author: Kelly <ky356@cornell.edu>
+Date:   Fri Apr 5 17:34:13 2019 -0400
+
+    first attempt second graph
+
+commit a4887785eb40e2041c8bddd913863acb78c494f9
+Author: SM Mashuque <smjim1998@gmail.com>
+Date:   Fri Apr 5 04:25:47 2019 -0400
+
+    implement a hover over card for each point. cool
+
+commit f41146a47c36c3a5bb2067824235b312c5ed12cd
+Author: SM Mashuque <smjim1998@gmail.com>
+Date:   Fri Apr 5 03:51:16 2019 -0400
+
+    finished implementing interactive graph with buttons
+
+commit 4f4a99ad8165b92ec5b3a0919d9baef4973d1904
+Author: SM Mashuque <smjim1998@gmail.com>
+Date:   Fri Apr 5 03:01:38 2019 -0400
+
+    save work, 70% way implementing interactive buttons
+
+commit 7f2199a717e57ab128c0a6acaffa990e9a8c4f05
+Author: SM Mashuque <smjim1998@gmail.com>
+Date:   Fri Apr 5 02:27:25 2019 -0400
+
+    save work, mid way implementing interactive buttons
+
+commit 336b9246ae3906265a016359618b09b4c92aa988
+Author: Kelly <ky356@cornell.edu>
+Date:   Thu Apr 4 22:01:43 2019 -0400
+
+    chloroplelth and mass shooting points
+
+commit cc960e40f3fab06f300df22fad0828619b981809
+Author: Anastasia Okoye <ao322@cornell.edu>
+Date:   Thu Apr 4 18:21:26 2019 -0400
+
+    took count out
+
+commit 8c09a2061576303320e297a727ece5934d57e80c
+Merge: 8004abe f63ef42
+Author: Anastasia Okoye <ao322@cornell.edu>
+Date:   Thu Apr 4 18:16:29 2019 -0400
+
+    Merge branch 'master' of https://github.com/mashgreat2/cs-3300-p2
+
+commit 8004abe5353f17d3fcc791d10c80ee209182218a
+Author: Anastasia Okoye <ao322@cornell.edu>
+Date:   Thu Apr 4 18:16:23 2019 -0400
+
+    fixed error (i think) - count now equal to number of datapints in data_2018
+
+commit f63ef42502af19542721e88ca1b1a00946406d9b
+Author: SM Mashuque <36269023+mashgreat2@users.noreply.github.com>
+Date:   Thu Apr 4 18:13:28 2019 -0400
+
+    Set theme jekyll-theme-cayman
+
+commit df9285a2ffc05a8e62e66c0ba57077ee5a7ea303
+Merge: 2a007cb 4c9c2ea
+Author: SM Mashuque <smjim1998@gmail.com>
+Date:   Thu Apr 4 18:11:06 2019 -0400
+
+    Merge branch 'master' of github.com:mashgreat2/cs-3300-p2
+
+commit 2a007cb5e02bc4c37a87c2bb6d1c21f0d3b8b362
+Author: SM Mashuque <smjim1998@gmail.com>
+Date:   Thu Apr 4 18:11:01 2019 -0400
+
+    fix the text error
+
+commit 4c9c2ea88000c9b0ab1adc419d82af0a6dd0a70e
+Author: Anastasia Okoye <ao322@cornell.edu>
+Date:   Thu Apr 4 17:53:41 2019 -0400
+
+    opacity
+
+commit 72080997b6a2e18322d354baaa9ff23dc135a77b
+Author: Anastasia Okoye <ao322@cornell.edu>
+Date:   Thu Apr 4 17:52:23 2019 -0400
+
+    added points to map, not all points are visible becase there is an error i cannot figure out lol
+
+commit b80e053c4c0c73e6ec1fc39f7f71a5bfc6463de2
+Author: Anastasia Okoye <ao322@cornell.edu>
+Date:   Thu Apr 4 14:28:46 2019 -0400
+
+    added name and individual file
+
+commit 6e56959f01ab3e76d4fa7b22216c26bbba484f62
+Author: SM Mashuque <smjim1998@gmail.com>
+Date:   Thu Mar 28 00:40:15 2019 -0400
+
+    setup project 2 for 3300
+
+commit ca7b6d87b73e5d6722d9d7b67c8f3b7786c7f4e6
+Author: SM Mashuque <smjim1998@gmail.com>
+Date:   Fri Mar 8 11:30:07 2019 -0500
+
+    fix typo
+
+commit 5b5d7939cd5f837f5c05ead41ed4107fd4eaad24
+Author: SM Mashuque <smjim1998@gmail.com>
+Date:   Fri Mar 8 11:29:03 2019 -0500
+
+    first commit
